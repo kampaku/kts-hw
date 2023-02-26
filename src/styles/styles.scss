@@ -1,0 +1,11 @@
+@import './EudoxusSans/fonts';
+@import "variables";
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: 'Eudoxus Sans', sans-serif;
+  color: $text-color;
+}

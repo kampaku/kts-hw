@@ -1,0 +1,29 @@
+@import "src/styles/variables";
+
+.input {
+  width: 299.72px;
+  height: 84px;
+  border: 0;
+  padding-left: 28px;
+  font-family: 'Eudoxus Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.8;
+  color: #afadb5;
+  box-shadow: 0px 4px 120px 0px rgba(175, 173, 181, 0.15);
+  background-color: #ffffff;
+
+  @media (max-width: $mobile-width) {
+    font-size: 14px;
+    height: 54px;
+  }
+
+  &:focus {
+    color: #151411;
+    outline-color: $main-color;
+  }
+
+  &:disabled {
+    color: #151411;
+  }
+}

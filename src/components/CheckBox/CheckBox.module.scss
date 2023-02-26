@@ -1,0 +1,34 @@
+.checkbox {
+  display: flex;
+  max-width: max-content;
+  cursor: pointer;
+  box-shadow: 0px 4px 120px 0px rgba(175, 173, 181, 1);
+  transform: translate(1px, 1px);
+
+  &__input {
+    position: absolute;
+    appearance: none;
+    clip: rect(0 0 0 0);
+
+    &:checked + .checkbox__box {
+      background: url('../../../public/Check.svg') 55% 30% no-repeat;
+      box-shadow: 0 0 0 1px var(--main-color);
+    }
+
+    &:hover + .checkbox__box {
+      box-shadow: 0 0 0 1px var(--main-color);
+    }
+
+    &:disabled + .checkbox__box {
+      opacity: 0.7;
+      box-shadow: 0 0 0 0;
+    }
+  }
+
+  &__box {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    min-height: 40px;
+  }
+}

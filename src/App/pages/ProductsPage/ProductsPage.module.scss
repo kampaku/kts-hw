@@ -1,0 +1,11 @@
+@import "src/styles/variables";
+
+.page {
+  &__results {
+    margin-top: 51px;
+
+    @media (max-width: $mobile-width) {
+      margin-top: 31px;
+    }
+  }
+}
