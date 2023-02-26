@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { Button } from "@components/Button";
 import { Card } from "@components/Card";
 import { WithLoader } from "@components/WithLoader";
 import { Product } from "@config/types";
