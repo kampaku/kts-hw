@@ -19,11 +19,7 @@ export const Results = ({ list }: ResultsProps) => {
         {list.map((value) => (
           <Card
             key={value.id}
-            image={value.images[0]}
-            title={value.title}
-            subtitle={value.description}
-            content={value.price}
-            category={value.category.name}
+            card={value}
             onClick={() => navigate(`/product/${value.id}`)}
           />
         ))}

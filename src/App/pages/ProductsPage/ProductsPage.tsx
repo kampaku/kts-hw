@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Loader } from "@components/Loader";
 import { Product } from "@config/types";
+import { urls } from "@config/urls";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -12,23 +13,15 @@ import styles from "./ProductsPage.module.scss";
 export const ProductsPage = () => {
   const [query, setQuery] = useState("");
   const [productList, setProductList] = useState<Product[]>([]);
-  const dataChunk = useRef(40);
 
   const fetchMore = async () => {
-    const res = await axios.get(
-      `https://api.escuelajs.co/api/v1/products?offset=${
-        dataChunk.current - 20
-      }&limit=20`
-    );
+    const res = await axios.get(urls.products(productList.length));
     setProductList((prev) => [...prev, ...res.data]);
-    dataChunk.current += 20;
   };
 
   useEffect(() => {
     const fetch = async () => {
-      const res = await axios.get(
-        "https://api.escuelajs.co/api/v1/products?offset=0&limit=20"
-      );
+      const res = await axios.get(urls.products(0));
       setProductList(res.data);
     };
     fetch();

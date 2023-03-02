@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@components/Card";
 import { WithLoader } from "@components/WithLoader";
 import { Product } from "@config/types";
+import { urls } from "@config/urls";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -18,13 +19,11 @@ export const ProductDetails = () => {
 
   useEffect(() => {
     const fetch = async () => {
-      const productRes = await axios.get(
-        `https://api.escuelajs.co/api/v1/products/${id}`
-      );
-      const relatedRes = await axios.get(
-        `https://api.escuelajs.co/api/v1/products?offset=0&limit=3`
-      );
-      setProduct(productRes.data);
+      if (id) {
+        const productRes = await axios.get(urls.product(id));
+        setProduct(productRes.data);
+      }
+      const relatedRes = await axios.get(urls.products(0, 3));
       setRelatedProduct(relatedRes.data);
       setIsLoading(false);
     };
@@ -43,11 +42,7 @@ export const ProductDetails = () => {
           {relatedProduct.map((product) => (
             <Card
               key={product.id}
-              image={product.images[0]}
-              title={product.title}
-              subtitle={product.description}
-              content={product.price}
-              category={product.category.name}
+              card={product}
               onClick={() => navigate(`/product/${product.id}`)}
             />
           ))}

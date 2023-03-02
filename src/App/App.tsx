@@ -1,10 +1,8 @@
-import React from "react";
-
 import Header from "@components/Header";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import styles from "./App.module.scss";
-import { ProductDetails } from "./pages/ProductDeatails";
+import { ProductDetails } from "./pages/ProductDetails";
 import { ProductsPage } from "./pages/ProductsPage";
 
 function App() {
