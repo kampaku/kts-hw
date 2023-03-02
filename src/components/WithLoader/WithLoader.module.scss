@@ -1,0 +1,10 @@
+.with-loader {
+  position: relative;
+
+  &__loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

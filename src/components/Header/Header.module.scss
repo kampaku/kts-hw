@@ -1,0 +1,60 @@
+@import "src/styles/variables";
+
+.header {
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+  align-items: center;
+  height: 120px;
+
+  &__border {
+    border-bottom: 2px solid #f3f3f3;
+  }
+
+  @media (max-width: $mobile-width) {
+    height: 72px;
+  }
+
+  &__logo img {
+    @media (max-width: $mobile-width) {
+      object-fit: cover;
+      width: 99px;
+    }
+  }
+
+  &__nav {
+    display: flex;
+    gap: 60px;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.8;
+
+    @media (max-width: $tablet-width) {
+      display: none;
+    }
+  }
+
+  &__link {
+    position: relative;
+    color: $main-color;
+
+    &::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      left: 0;
+      background-color: $main-color;
+      top: 76px;
+    }
+  }
+
+  &__controls {
+    display: flex;
+    gap: 30px;
+
+    @media (max-width: $tablet-width) {
+      display: none;
+    }
+  }
+}
