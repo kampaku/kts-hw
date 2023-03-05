@@ -36,7 +36,11 @@ export const Search = ({ value, onSearch }: SearchProps) => {
             onChange={handleChange}
             placeholder={"Search property"}
           />
-          <Button className={styles["search__button"]} loading={false}>
+          <Button
+            className={styles["search__button"]}
+            loading={false}
+            type={"submit"}
+          >
             Find Now
           </Button>
         </div>

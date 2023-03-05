@@ -1,49 +1,52 @@
 import { useEffect, useState } from "react";
 
 import { Loader } from "@components/Loader";
-import { Product } from "@config/types";
-import { urls } from "@config/urls";
-import axios from "axios";
+import { ProductsStore } from "@store/ProductsStore";
+import { useQueryParamsStoreInit } from "@store/RootStore/hooks/useQueryParamsStoreInit";
+import { useLocalStore } from "@utils/useLocalStore";
+import { observer } from "mobx-react-lite";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useSearchParams } from "react-router-dom";
 
 import { Results } from "./components/Results";
 import { Search } from "./components/Search";
 import styles from "./ProductsPage.module.scss";
 
-export const ProductsPage = () => {
-  const [query, setQuery] = useState("");
-  const [productList, setProductList] = useState<Product[]>([]);
+export const ProductsPage = observer(() => {
+  useQueryParamsStoreInit();
+  const productStore = useLocalStore(() => new ProductsStore());
+  let [searchParams, setSearchParams] = useSearchParams();
+  const [query, setQuery] = useState(searchParams.get("search") || "");
 
-  const fetchMore = async () => {
-    const res = await axios.get(urls.products(productList.length));
-    setProductList((prev) => [...prev, ...res.data]);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSearchParams({ search: query });
   };
 
   useEffect(() => {
-    const fetch = async () => {
-      const res = await axios.get(urls.products(0));
-      setProductList(res.data);
-    };
-    fetch();
-  }, []);
+    productStore.getProductList();
+  }, [productStore]);
+
   return (
     <div className={"container"}>
-      <Search value={query} onSearch={setQuery} />
+      <form onSubmit={handleSubmit}>
+        <Search value={query} onSearch={setQuery} />
+      </form>
       <div className={styles.page__results}>
         <InfiniteScroll
           hasChildren={true}
-          next={fetchMore}
+          next={productStore.getProductList}
           hasMore={true}
           loader={
             <div style={{ display: "flex", justifyContent: "center" }}>
               <Loader />
             </div>
           }
-          dataLength={productList.length}
+          dataLength={productStore.list.length}
         >
-          <Results list={productList} />
+          <Results list={productStore.list} />
         </InfiniteScroll>
       </div>
     </div>
   );
-};
+});

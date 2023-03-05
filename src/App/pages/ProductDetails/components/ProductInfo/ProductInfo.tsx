@@ -1,10 +1,10 @@
 import { Button } from "@components/Button";
-import { Product } from "@config/types";
+import { ProductModel } from "@store/models";
 
 import styles from "./ProductInfo.module.scss";
 
 type ProductInfoProps = {
-  product: Product;
+  product: ProductModel;
 };
 export const ProductInfo = ({ product }: ProductInfoProps) => {
   return (
