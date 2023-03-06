@@ -25,7 +25,7 @@ export class ProductsStore {
       _list: observable.ref,
       _page: observable,
       _meta: observable,
-      _qpReaction: observable,
+      _qpReaction: action,
       list: computed,
       meta: computed,
       getProductList: action,
@@ -73,7 +73,7 @@ export class ProductsStore {
     () => rootStore.query.getParam("search"),
     async (search) => {
       this.reset();
-      await this.getProductList();
+      await this.getProductList(0);
     }
   );
 
