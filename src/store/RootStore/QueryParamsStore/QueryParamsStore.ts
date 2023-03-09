@@ -14,23 +14,18 @@ export class QueryParamsStore {
     });
   }
 
-  get search() {
-    return this._search;
-  }
-
-  get params() {
-    return this._params;
-  }
-
   getParam(
     key: string
   ): undefined | string | string[] | qs.ParsedQs | qs.ParsedQs[] {
     return this._params[key];
   }
 
+  setParam = (key: string, value: string) => {
+    this._params[key] = value;
+  };
+
   setSearch(search: string) {
     search = search.startsWith("?") ? search.slice(1) : search;
-
     if (this._search !== search) {
       this._search = search;
       this._params = qs.parse(search);

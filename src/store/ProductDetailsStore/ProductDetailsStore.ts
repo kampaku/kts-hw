@@ -1,5 +1,6 @@
 import { urls } from "@config/urls";
 import { ProductModel } from "@store/models";
+import { ProductsStore } from "@store/ProductsStore";
 import { Meta } from "@utils/meta";
 import { ILocalStore } from "@utils/useLocalStore";
 import axios from "axios";
@@ -11,19 +12,23 @@ import {
   runInAction,
 } from "mobx";
 
-type PrivateFields = "_product" | "_meta";
+type PrivateFields = "_product" | "_meta" | "_productsStore";
 
 export class ProductDetailsStore implements ILocalStore {
   private _product: ProductModel | null = null;
   private _meta: Meta = Meta.initial;
+  private _productsStore = new ProductsStore();
 
   constructor() {
     makeObservable<ProductDetailsStore, PrivateFields>(this, {
       _product: observable,
       _meta: observable,
+      _productsStore: observable,
       product: computed,
       meta: computed,
+      relatedProducts: computed,
       getProduct: action,
+      init: action,
     });
   }
 
@@ -34,6 +39,16 @@ export class ProductDetailsStore implements ILocalStore {
   get meta() {
     return this._meta;
   }
+
+  get relatedProducts() {
+    return this._productsStore.list;
+  }
+
+  init = async (id: string) => {
+    this.destroy();
+    this.getProduct(id);
+    this._productsStore.getProductList(0, 3);
+  };
 
   getProduct = async (id: string) => {
     this._product = null;
@@ -51,5 +66,8 @@ export class ProductDetailsStore implements ILocalStore {
     });
   };
 
-  destroy() {}
+  destroy() {
+    this._product = null;
+    this._productsStore?.destroy();
+  }
 }

@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Loader } from "@components/Loader";
 import { ProductsStore } from "@store/ProductsStore";
-import { useQueryParamsStoreInit } from "@store/RootStore/hooks/useQueryParamsStoreInit";
+import { rootStore } from "@store/RootStore/instance";
 import { useLocalStore } from "@utils/useLocalStore";
 import { observer } from "mobx-react-lite";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -13,7 +13,6 @@ import { Search } from "./components/Search";
 import styles from "./ProductsPage.module.scss";
 
 export const ProductsPage = observer(() => {
-  useQueryParamsStoreInit();
   const productStore = useLocalStore(() => new ProductsStore());
   let [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("search") || "");
@@ -21,11 +20,8 @@ export const ProductsPage = observer(() => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSearchParams({ search: query });
+    rootStore.query.setParam("search", query);
   };
-
-  useEffect(() => {
-    productStore.getProductList();
-  }, [productStore]);
 
   return (
     <div className={"container"}>
@@ -36,7 +32,7 @@ export const ProductsPage = observer(() => {
         <InfiniteScroll
           hasChildren={true}
           next={productStore.getProductList}
-          hasMore={true}
+          hasMore={productStore.hasMore}
           loader={
             <div style={{ display: "flex", justifyContent: "center" }}>
               <Loader />

@@ -13,24 +13,40 @@ import {
   reaction,
 } from "mobx";
 
-type PrivateFields = "_list" | "_page" | "_meta" | "_qpReaction";
+type PrivateFields =
+  | "_list"
+  | "_page"
+  | "_meta"
+  | "_qpReaction"
+  | "_reset"
+  | "_hasMore"
+  | "_search";
 
 export class ProductsStore {
   private _list: ProductModel[] = [];
   private _page: number = 0;
   private _meta: Meta = Meta.initial;
+  private _hasMore = true;
+  private _search = "";
 
   constructor() {
     makeObservable<ProductsStore, PrivateFields>(this, {
       _list: observable.ref,
       _page: observable,
       _meta: observable,
+      _hasMore: observable,
+      _search: observable,
       _qpReaction: action,
       list: computed,
       meta: computed,
+      hasMore: computed,
       getProductList: action,
-      reset: action,
+      _reset: action,
     });
+  }
+
+  get hasMore() {
+    return this._hasMore;
   }
 
   get list() {
@@ -43,41 +59,50 @@ export class ProductsStore {
 
   getProductList = async (count = 20, limit = 20) => {
     this._meta = Meta.loading;
-    this._page += 1;
 
-    const response = await axios.get<ProductApi[]>(
-      urls.products({
-        offset: this._page * count,
-        limit,
-        title: rootStore.query.getParam("search")?.toString() || "",
-      })
-    );
-
-    runInAction(() => {
-      if (response.status === 200) {
-        this._list = [...this._list, ...response.data.map(normalizeProduct)];
-        this._meta = Meta.success;
-        return;
-      }
+    try {
+      const response = await axios.get<ProductApi[]>(urls.products(), {
+        params: {
+          offset: this._page * count,
+          limit,
+          title: this._search,
+        },
+      });
+      runInAction(() => {
+        if (response.status === 200) {
+          this._page += 1;
+          this._list = [...this._list, ...response.data.map(normalizeProduct)];
+          this._meta = Meta.success;
+          if (response.data.length === 0) {
+            this._hasMore = false;
+          }
+          return;
+        }
+        this._meta = Meta.error;
+        this._list = [];
+      });
+    } catch (error) {
       this._meta = Meta.error;
-      this._list = [];
-    });
+    }
   };
 
-  reset = () => {
+  private _reset = () => {
     this._list = [];
     this._page = 0;
+    this._hasMore = true;
   };
 
   private readonly _qpReaction: IReactionDisposer = reaction(
     () => rootStore.query.getParam("search"),
-    async (search) => {
-      this.reset();
-      await this.getProductList(0);
+    (search) => {
+      this._reset();
+      this._search = search?.toString() ?? "";
+      this.getProductList();
     }
   );
 
   destroy() {
+    this._reset();
     this._qpReaction();
   }
 }

@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { Card } from "@components/Card";
 import { WithLoader } from "@components/WithLoader";
 import { ProductDetailsStore } from "@store/ProductDetailsStore";
-import { ProductsStore } from "@store/ProductsStore";
 import { Meta } from "@utils/meta";
 import { useLocalStore } from "@utils/useLocalStore";
 import { observer } from "mobx-react-lite";
@@ -17,14 +16,12 @@ export const ProductDetails = observer(() => {
   const navigate = useNavigate();
 
   const productDetailsStore = useLocalStore(() => new ProductDetailsStore());
-  const productStore = useLocalStore(() => new ProductsStore());
 
   useEffect(() => {
     if (id) {
-      productDetailsStore.getProduct(id);
-      productStore.getProductList(0, 3);
+      productDetailsStore.init(id);
     }
-  }, [productDetailsStore, id, productStore]);
+  }, [id]);
 
   return (
     <div className={`${styles.page} container`}>
@@ -38,7 +35,7 @@ export const ProductDetails = observer(() => {
       <div className={styles.page__related}>
         <p className={styles["page__related-text"]}>Related Items</p>
         <div className={styles["page__related-cards"]}>
-          {productStore.list.map((product) => (
+          {productDetailsStore.relatedProducts.map((product) => (
             <Card
               key={product.id}
               card={product}

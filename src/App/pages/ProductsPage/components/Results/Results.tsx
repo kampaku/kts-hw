@@ -1,5 +1,6 @@
 import { Card } from "@components/Card";
 import { ProductModel } from "@store/models";
+import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
 
 import styles from "./Results.module.scss";
