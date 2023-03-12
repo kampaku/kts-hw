@@ -1,8 +1,9 @@
 {
+  "parser": "@typescript-eslint/parser",
   "extends": [
-    "react-app",
     "plugin:prettier/recommended"
   ],
+  "ignorePatterns": ["dist", "webpack", "test", "*.config.*"],
   "plugins": ["prettier"],
   "rules": {
     "no-console": "error",

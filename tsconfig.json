@@ -21,6 +21,13 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
+  "ts-node": {
+    "compilerOptions": {
+        "module": "CommonJS",
+        "target": "es5",
+        "esModuleInterop": true
+    },
+  },
   "include": [
     "src"
   ]
