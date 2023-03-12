@@ -1,11 +1,11 @@
 import { Card } from "@components/Card";
-import { Product } from "@config/types";
+import { ProductModel } from "@store/models";
 import { useNavigate } from "react-router-dom";
 
 import styles from "./Results.module.scss";
 
 type ResultsProps = {
-  list: Product[];
+  list: ProductModel[];
 };
 export const Results = ({ list }: ResultsProps) => {
   const navigate = useNavigate();

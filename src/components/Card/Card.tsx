@@ -1,25 +1,11 @@
 import React from "react";
 
-import { Product } from "@config/types";
+import { ProductModel } from "@store/models";
 
 import styles from "./Card.module.scss";
 
-// export type CardProps = {
-//   /** URL изображения */
-//   image: string;
-//   /** Заголовок карточки */
-//   title: React.ReactNode;
-//   /** Подзаголовок карточки */
-//   subtitle: React.ReactNode;
-//   /** Содержимое карточки (футер/боковая часть), может быть пустым */
-//   content?: React.ReactNode;
-//   /** Клик на карточку */
-//   onClick?: React.MouseEventHandler;
-//   category?: string;
-// };
-
 export type CardProps = {
-  card: Product;
+  card: ProductModel;
   onClick?: React.MouseEventHandler;
 };
 

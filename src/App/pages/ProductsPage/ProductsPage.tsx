@@ -1,49 +1,53 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import { Loader } from "@components/Loader";
-import { Product } from "@config/types";
-import { urls } from "@config/urls";
-import axios from "axios";
+import { ProductsStore } from "@store/ProductsStore";
+import { useLocalStore } from "@utils/useLocalStore";
+import { observer } from "mobx-react-lite";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import { Results } from "./components/Results";
 import { Search } from "./components/Search";
 import styles from "./ProductsPage.module.scss";
 
-export const ProductsPage = () => {
-  const [query, setQuery] = useState("");
-  const [productList, setProductList] = useState<Product[]>([]);
-
-  const fetchMore = async () => {
-    const res = await axios.get(urls.products(productList.length));
-    setProductList((prev) => [...prev, ...res.data]);
-  };
+export const ProductsPage = observer(() => {
+  const productStore = useLocalStore(() => new ProductsStore());
+  const firstRender = useRef(true);
 
   useEffect(() => {
-    const fetch = async () => {
-      const res = await axios.get(urls.products(0));
-      setProductList(res.data);
+    productStore.getProductList();
+
+    return () => {
+      firstRender.current = true;
     };
-    fetch();
   }, []);
+
   return (
     <div className={"container"}>
-      <Search value={query} onSearch={setQuery} />
+      <div>
+        <Search value={productStore.search} onSearch={productStore.setSearch} />
+      </div>
       <div className={styles.page__results}>
         <InfiniteScroll
           hasChildren={true}
-          next={fetchMore}
-          hasMore={true}
+          next={() => {
+            if (firstRender.current) {
+              firstRender.current = false;
+              return;
+            }
+            productStore.getProductList();
+          }}
+          hasMore={productStore.hasMore}
           loader={
             <div style={{ display: "flex", justifyContent: "center" }}>
               <Loader />
             </div>
           }
-          dataLength={productList.length}
+          dataLength={productStore.list.length}
         >
-          <Results list={productList} />
+          <Results list={productStore.list} />
         </InfiniteScroll>
       </div>
     </div>
   );
-};
+});
