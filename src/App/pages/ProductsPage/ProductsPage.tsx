@@ -1,12 +1,10 @@
-import { useState } from "react";
+import { useEffect, useRef } from "react";
 
 import { Loader } from "@components/Loader";
 import { ProductsStore } from "@store/ProductsStore";
-import { rootStore } from "@store/RootStore/instance";
 import { useLocalStore } from "@utils/useLocalStore";
 import { observer } from "mobx-react-lite";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useSearchParams } from "react-router-dom";
 
 import { Results } from "./components/Results";
 import { Search } from "./components/Search";
@@ -14,24 +12,31 @@ import styles from "./ProductsPage.module.scss";
 
 export const ProductsPage = observer(() => {
   const productStore = useLocalStore(() => new ProductsStore());
-  let [searchParams, setSearchParams] = useSearchParams();
-  const [query, setQuery] = useState(searchParams.get("search") || "");
+  const firstRender = useRef(true);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setSearchParams({ search: query });
-    rootStore.query.setParam("search", query);
-  };
+  useEffect(() => {
+    productStore.getProductList();
+
+    return () => {
+      firstRender.current = true;
+    };
+  }, []);
 
   return (
     <div className={"container"}>
-      <form onSubmit={handleSubmit}>
-        <Search value={query} onSearch={setQuery} />
-      </form>
+      <div>
+        <Search value={productStore.search} onSearch={productStore.setSearch} />
+      </div>
       <div className={styles.page__results}>
         <InfiniteScroll
           hasChildren={true}
-          next={productStore.getProductList}
+          next={() => {
+            if (firstRender.current) {
+              firstRender.current = false;
+              return;
+            }
+            productStore.getProductList();
+          }}
           hasMore={productStore.hasMore}
           loader={
             <div style={{ display: "flex", justifyContent: "center" }}>

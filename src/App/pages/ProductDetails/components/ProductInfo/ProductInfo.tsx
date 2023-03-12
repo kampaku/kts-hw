@@ -1,12 +1,13 @@
 import { Button } from "@components/Button";
 import { ProductModel } from "@store/models";
+import { observer } from "mobx-react-lite";
 
 import styles from "./ProductInfo.module.scss";
 
 type ProductInfoProps = {
   product: ProductModel;
 };
-export const ProductInfo = ({ product }: ProductInfoProps) => {
+export const ProductInfo = observer(({ product }: ProductInfoProps) => {
   return (
     <div className={styles.product}>
       <div className={styles.product__image}>
@@ -25,4 +26,4 @@ export const ProductInfo = ({ product }: ProductInfoProps) => {
       </div>
     </div>
   );
-};
+});

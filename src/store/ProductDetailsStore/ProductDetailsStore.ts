@@ -29,6 +29,7 @@ export class ProductDetailsStore implements ILocalStore {
       relatedProducts: computed,
       getProduct: action,
       init: action,
+      destroy: action,
     });
   }
 
@@ -47,7 +48,7 @@ export class ProductDetailsStore implements ILocalStore {
   init = async (id: string) => {
     this.destroy();
     this.getProduct(id);
-    this._productsStore.getProductList(0, 3);
+    this._productsStore.getProductList({ count: 0, limit: 3 });
   };
 
   getProduct = async (id: string) => {

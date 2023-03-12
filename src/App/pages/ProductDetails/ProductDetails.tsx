@@ -2,6 +2,7 @@ import { useEffect } from "react";
 
 import { Card } from "@components/Card";
 import { WithLoader } from "@components/WithLoader";
+import { ProductModel } from "@store/models";
 import { ProductDetailsStore } from "@store/ProductDetailsStore";
 import { Meta } from "@utils/meta";
 import { useLocalStore } from "@utils/useLocalStore";
@@ -35,7 +36,7 @@ export const ProductDetails = observer(() => {
       <div className={styles.page__related}>
         <p className={styles["page__related-text"]}>Related Items</p>
         <div className={styles["page__related-cards"]}>
-          {productDetailsStore.relatedProducts.map((product) => (
+          {productDetailsStore.relatedProducts.map((product: ProductModel) => (
             <Card
               key={product.id}
               card={product}

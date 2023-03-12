@@ -1,4 +1,4 @@
-import { action, makeObservable, observable } from "mobx";
+import { action, computed, makeObservable, observable } from "mobx";
 import * as qs from "qs";
 
 type PrivateFields = "_params";
@@ -11,7 +11,17 @@ export class QueryParamsStore {
     makeObservable<QueryParamsStore, PrivateFields>(this, {
       _params: observable.ref,
       setSearch: action,
+      params: computed,
+      setParam: action,
     });
+  }
+
+  get params() {
+    return qs.stringify(this._params);
+  }
+
+  get search() {
+    return this._search;
   }
 
   getParam(
@@ -21,7 +31,13 @@ export class QueryParamsStore {
   }
 
   setParam = (key: string, value: string) => {
-    this._params[key] = value;
+    if (this._params[key] === value) {
+      return;
+    }
+    this._params = {
+      ...this._params,
+      [key]: value,
+    };
   };
 
   setSearch(search: string) {

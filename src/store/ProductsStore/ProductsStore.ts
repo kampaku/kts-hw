@@ -9,7 +9,6 @@ import {
   observable,
   action,
   runInAction,
-  IReactionDisposer,
   reaction,
 } from "mobx";
 
@@ -17,7 +16,6 @@ type PrivateFields =
   | "_list"
   | "_page"
   | "_meta"
-  | "_qpReaction"
   | "_reset"
   | "_hasMore"
   | "_search";
@@ -27,21 +25,37 @@ export class ProductsStore {
   private _page: number = 0;
   private _meta: Meta = Meta.initial;
   private _hasMore = true;
-  private _search = "";
+  private _search =
+    new URLSearchParams(window.location.search).get("search") || "";
+  private readonly _searchReaction;
 
   constructor() {
+    this._searchReaction = reaction(
+      () => this._search,
+      (search, prevSearch) => {
+        if (prevSearch === search) {
+          return;
+        }
+        this._reset();
+        rootStore.query.setParam("search", search);
+        this.getProductList();
+      },
+      { delay: 1000 }
+    );
     makeObservable<ProductsStore, PrivateFields>(this, {
       _list: observable.ref,
       _page: observable,
       _meta: observable,
       _hasMore: observable,
       _search: observable,
-      _qpReaction: action,
       list: computed,
       meta: computed,
       hasMore: computed,
       getProductList: action,
       _reset: action,
+      setSearch: action,
+      search: computed,
+      destroy: action,
     });
   }
 
@@ -57,7 +71,15 @@ export class ProductsStore {
     return this._meta;
   }
 
-  getProductList = async (count = 20, limit = 20) => {
+  get search() {
+    return this._search;
+  }
+
+  setSearch = (value: string) => {
+    this._search = value;
+  };
+
+  getProductList = async ({ count = 20, limit = 20 } = {}) => {
     this._meta = Meta.loading;
 
     try {
@@ -92,17 +114,9 @@ export class ProductsStore {
     this._hasMore = true;
   };
 
-  private readonly _qpReaction: IReactionDisposer = reaction(
-    () => rootStore.query.getParam("search"),
-    (search) => {
-      this._reset();
-      this._search = search?.toString() ?? "";
-      this.getProductList();
-    }
-  );
-
   destroy() {
     this._reset();
-    this._qpReaction();
+    this._searchReaction();
+    this._search = "";
   }
 }

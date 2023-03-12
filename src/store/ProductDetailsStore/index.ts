@@ -1,2 +1,1 @@
-import { ProductDetailsStore } from "./ProductDetailsStore";
-export { ProductDetailsStore };
+export { ProductDetailsStore } from "./ProductDetailsStore";
