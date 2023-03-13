@@ -9,5 +9,5 @@ const presets = [
   "@babel/preset-typescript",
 ];
 
-const plugins = ["@babel/plugin-transform-runtime"];
+const plugins = ["@babel/plugin-transform-runtime", "@babel/plugin-proposal-optional-chaining"];
 module.exports = { presets, plugins };

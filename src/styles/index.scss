@@ -1,3 +1,4 @@
+@import "variables";
 @import './EudoxusSans/fonts';
 
 * {
@@ -6,6 +7,6 @@
 
 html, body {
   font-family: 'Eudoxus Sans', sans-serif;
-  color: #151411;
+  color: $text-color;
   margin: 0;
 }

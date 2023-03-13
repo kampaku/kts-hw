@@ -2,12 +2,13 @@ import type { Configuration } from "webpack";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { merge } from "webpack-merge";
 
+import { getSettingsForStyles } from "./webpack.common";
 import paths from "./paths";
 import common from "./webpack.common";
 
 const prodConfig: Configuration = merge(common, {
   mode: "production",
-  devtool: "source-map",
+  devtool: "hidden-source-map",
   output: {
     path: paths.build,
     publicPath: "/",
@@ -17,29 +18,16 @@ const prodConfig: Configuration = merge(common, {
   module: {
     rules: [
       {
-        test: /\.(scss|css)$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          {
-            loader: "css-loader",
-            options: {
-              importLoaders: 2,
-              sourceMap: false,
-              modules: { auto: true },
-            },
-          },
-          "postcss-loader",
-          "sass-loader",
-        ],
+        test: /\.module\.s?css$/,
+        use: getSettingsForStyles(true, true),
+      },
+      {
+        test: /\.s?css$/,
+        exclude: /\.module\.s?css$/,
+        use: getSettingsForStyles(false, true),
       },
     ],
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: "styles/[name].[contenthash].css",
-      chunkFilename: "[id].css",
-    }),
-  ],
   optimization: {
     minimize: true,
     splitChunks: {

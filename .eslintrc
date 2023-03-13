@@ -4,7 +4,7 @@
     "plugin:prettier/recommended"
   ],
   "ignorePatterns": ["dist", "webpack", "test", "*.config.*"],
-  "plugins": ["prettier"],
+  "plugins": ["import", "prettier"],
   "rules": {
     "no-console": "error",
     "prettier/prettier": "error",
